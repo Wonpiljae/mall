@@ -1,0 +1,23 @@
+<center><h1>로그인</h1></center>
+<form th:action="@{/mem/login}" method="post">
+<table align="center" width="50" cellspacing="0" cellpadding="0" border="1">
+	<tr height="30" align="center">
+		<td><label for="username">아이디</label></td>
+	</tr>
+	<tr height="30" align="center">
+		<td><input type="text"		id="username"	name="username" cols="10" required/></td>        
+	</tr>
+	<tr height="30" align="center">
+		<td><label for="password">비밀번호</label></td>
+	</tr>
+	<tr height="30" align="center">
+		<td><input type="password"	id="password"	name="password" cols="10" required/></td> 
+	</tr>
+	<tr height="30" align="right">
+		<td colspan="2">
+			<input type="submit" value="로그인"	/>
+			<button th:onclick="|window.loaction='@{/mem/main}'|">메인으로</button>
+		</td>
+	</tr>
+</table>
+</form>

@@ -1,0 +1,33 @@
+package com.ex.repository;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import com.ex.data.MemberDTO;
+
+//@Repository	: DB 및 데이터 관련 작업을 하는 java 파일, @Mapper 쓰기 때문에 없어도 됨.
+@Mapper	// Mybatis에서 해당 인터페이스를 SQL 매퍼로 인식 : .xml 파일과 연결 된다.
+public interface MemberMapper {
+/*	@Param("파라미터명") 은 MyBatis 전용 어노테이션
+	1) Mapper 인터페이스의 메서드 파라미터에 이름을 지정.
+		: XML Mapper 의 SQL 쿼리에서 #{이름} 으로 해당 파라미터를 참조할 수 있음.
+	2) 메서드에 파라미터가 2개 이상인 경우
+		: 어떤 SQL 파라미터가 어떤 자바 파라미터인지 구분이 안 되므로 @Param으로 이름을 지정.
+	3) 메서드에 파라미터가 1개인 경우
+		: 그 파라미터명 그대로 SQL에서 사용 가능 → @Param 생략 가능.						*/
+	
+	// 회원 가입
+	public int memberInsert(MemberDTO memberDTO);
+	// 로그인확인
+	public int loginCheck(@Param("username") String username, @Param("password") String password);
+	// 해당 username 에 대한 모든 정보
+	public MemberDTO myInfo(String username);
+	// 전체 회원 정보
+	public List<MemberDTO> memberAll();
+	// 회원 탈퇴
+	public void memberDelete(String username);
+	// 정보 수정
+	public void memberUpdate(MemberDTO memberDTO);
+}

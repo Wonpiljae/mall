@@ -1,0 +1,105 @@
+package com.ex.controller;
+
+import java.util.List;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.ex.data.MemberDTO;
+import com.ex.service.MemberService;
+
+import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
+
+@Controller
+@RequestMapping("/mem/*")	// http://localhost:8080/mem/
+@RequiredArgsConstructor
+public class MemberController {
+
+	private final MemberService memberService;
+	
+	@GetMapping("main")
+	public String main() {
+		return "member/main";
+	}
+	
+	@GetMapping("insert")	// http://localhost:8080/mem/insert
+	public String insert() {
+		return "member/signUpForm";	// member/insertForm.html
+	}
+	
+	@PostMapping("insert")
+	public String userInsert( MemberDTO dto, Model model ) {
+		// DB 작업 
+		int result = memberService.insert(dto);
+		model.addAttribute("result", result);
+		return "member/signUpPro";
+	}
+	
+	@GetMapping("login")
+	public String login() {
+		return "member/login";
+	}
+	
+	@PostMapping("login")
+	public String login(@RequestParam("username") String username,
+						@RequestParam("password") String password,
+						HttpSession session) {
+		// DB 처리
+		int result = memberService.login(username, password);
+		if( result == 1 ) {
+			session.setAttribute("sid", username);
+		}
+		return "redirect:/mem/main";	// http://localhost:8080/mem/main 요청 : @GetMapping("main")
+	}
+	
+	@GetMapping("myInfo")
+	public String myInfo( HttpSession session, Model model ) {
+		String username = (String)session.getAttribute("sid");
+		model.addAttribute("dto", memberService.myInfo(username));  
+		return "member/myInfo";
+	}
+	
+	@GetMapping("allInfo")
+	public String all(Model model) {
+		List<MemberDTO> list = memberService.allInfo();
+		model.addAttribute("list", list);
+		return "member/allMember";
+	}
+	
+	@GetMapping("logout")
+	public String logout(HttpSession session) {
+		session.invalidate();
+		return "redirect:/mem/main";
+	}
+	
+	@GetMapping("delete")
+	public String delete(HttpSession session) {
+		String username = (String)session.getAttribute("sid");
+		memberService.delete(username);
+		session.invalidate();
+		return "redirect:/mem/main";
+	}
+	
+	// 글 수정 Form ( 기존 정보 확인 )
+	@GetMapping("update")
+	public String update(HttpSession session, Model model) {
+		String username = (String)session.getAttribute("sid");
+		MemberDTO memberDTO = memberService.myInfo(username);
+		model.addAttribute("dto", memberDTO);
+		return "member/updateForm";
+	}
+	
+	// 글 수정 Pro ( 찐 글수정 )
+	@PostMapping("update")	// get/post 다르니까 url 같아도 됨 
+	public String update(MemberDTO memberDTO, HttpSession session) {
+		String username = (String)session.getAttribute("sid");
+		memberDTO.setUsername(username);
+		memberService.update(memberDTO);
+		return "redirect:/member/main";
+	}
+}

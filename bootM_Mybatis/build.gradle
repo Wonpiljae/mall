@@ -1,0 +1,55 @@
+// build.gradle	프로젝트의 빌드, 라이브러리 관리, 실행 환경 설정 파일
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.5.4'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.ex'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {// web, devtools, lombok, thymeleaf, OracleDriver, mybatis
+/*Spring Boot의 웹 애플리케이션 개발 기본 라이브러리. 프로젝트 생성 시 Spring Web 옵션을 체크 시 자동 생성.
+  spring-boot-starter-web 은 웹 개발에 필요한 필수 기능 포함.
+  Spring MVC , 내장 톰캣 서버 , REST API 기능 , Jackson(JSON 처리) , Validation
+  등 웹 애플리케이션 개발에 필요한 필수 라이브러리 묶음(Starter)	*/
+	implementation 'org.springframework.boot:spring-boot-starter-web'	
+// Spring Boot의 테스트 전용 라이브러리
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+// 테스트 실행 시(JUnit Platform) 필요한 런타임 라이브러리
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	
+// Spring Boot 개발 도구 라이브러리 (DevTools)	- 코드 수정 후 자동 서버 재시작(Hot Reload) 기능
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	
+// Lombok 라이브러리를 컴파일 시에만 적용. 이것만 적으면 어노테이션 인식은 못함
+	compileOnly 'org.projectlombok:lombok'
+// Lombok 어노테이션을 처리하는 프로세서 라이브러리 함께 추가해야 컴파일 시 어노테이션을 처리해 코드 생성 가능
+	annotationProcessor 'org.projectlombok:lombok'
+	
+// 타임리프(Thymeleaf) 뷰 템플릿 라이브러리
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+/*Thymeleaf Layout Dialect 라이브러리
+  레이아웃(템플릿 상속) 기능을 사용할 수 있게 함
+  JSP의 <%@ include %> 나 타임리프의 fragment 기능을 더 강력하게 확장		*/
+	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+
+// OracleDriver - ojdbc17
+	runtimeOnly 'com.oracle.database.jdbc:ojdbc17'
+// mybatis
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}

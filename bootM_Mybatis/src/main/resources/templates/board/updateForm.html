@@ -1,0 +1,51 @@
+<span th:if="${result == 1}">
+<center><h1>글수정</h1></center>
+<form th:action="@{/board/update2}" method="post">
+<table width="400" cellspacing="0" cellpadding="0" border="1" align="center">
+	<tr height="30" align="center">
+		<td width="70">
+			<label for="writer">작성자</label>
+		</td>
+		<td width="330" align="left">
+			<input type="text" name="writer" id="writer" th:value="${dto.writer}" size="15" requied />
+			<input type="hidden" name="num" th:value="${dto.num}" />
+			<input type="hidden" name="pageNum" th:value="${pageNum}" />
+		</td>
+	</tr>
+	<tr height="30" align="center">
+		<td><label for="title">글제목</label></td>
+		<td align="left"><input type="text" name="title" id="title" th:value="${dto.title}" size="15" requird /></td>
+	</tr>
+	<tr height="30" align="center">
+		<td>
+			<label for="content">글내용</label>
+		</td>
+		<td align="left">
+			<textarea name="content" id="content" th:text="${dto.content}" rows="15" cols="42"></textarea>
+		</td>
+	</tr>
+	<tr height="30" alihn="center">
+		<td>
+			<label for="password">비밀번호</label>
+		</td>
+		<td align="left">
+			<input type="password" id="password" name="pw" th:value="${dto.pw}" size="15" required />
+		</td>
+	</tr>
+	<tr height="30">
+		<td colspan="2" align="right">
+			<input type="submit" value="글수정" />&nbsp;&nbsp;&nbsp;
+			<input type="reset" value="다시작성" />&nbsp;&nbsp;&nbsp;
+			<input type="button" value="글목록" th:onclick="|window.location='@{/board/list(pageNum=${pageNum})}'|" />
+			&nbsp;&nbsp;
+		</td>
+	</tr>
+</table>
+</form>
+</span>
+<span th:unless="${result == 1}">
+	<script>
+		alert("비밀번호를 확인하세요.");
+		history.go(-1);
+	</script>
+</span>

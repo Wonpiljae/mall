@@ -1,0 +1,28 @@
+<!--  로그인(session) 전 버튼 두개 ㅎㅎ
+<center><h1>메인</h1></center>
+	<a th:href="@{/mem/insert}">회원가입</a>
+	<a th:href="@{/mem/login}">로그인</a>
+-->
+
+<center><h1>메인</h1></center>
+<table align="center">
+	<tr th:if="${session.sid == null}">
+		<td>
+			<a th:href="@{/mem/insert}">회원가입</a>
+			<a th:href="@{/mem/login}">로그인</a>
+		</td>
+	</tr>
+	<tr th:if="${session.sid != null}">
+		<td>
+			<a th:href="@{/mem/myInfo}">내 정보</a>
+			<a th:href="@{/mem/allInfo}">전체회원</a>
+			<a th:href="@{/mem/logout}">로그아웃</a>
+		</td>
+	</tr>
+	<tr th:if="${session.sid} != null">	
+		<td>
+			<a th:href="@{/mem/delete}">회원탈퇴</a>
+			<a th:href="@{/mem/update}">정보수정</a>
+		</td>
+	</tr>
+</table>

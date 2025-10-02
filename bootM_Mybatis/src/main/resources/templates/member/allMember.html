@@ -1,0 +1,17 @@
+<center><h1>회원목록</h1></center>
+<table align="center" width="700" cellspacing="0" cellpadding="0" border="1">
+	<tr height="30">
+		<th width="100">사용자명</th>
+		<th width="100">비밀번호</th>
+		<th width="100">생년월일</th>
+		<th width="200">이메일</th>
+		<th width="200">가입날짜</th>
+	</tr>
+	<tr th:each="dto : ${list}" height="30" align="center">
+		<td th:text="${dto.username}"></td>
+		<td th:text="${dto.password}"></td>
+		<td th:text="${#temporals.format(dto.birth, 'yy-MM-dd')}"></td>
+		<td th:text="${dto.email}"></td>
+		<td th:text="${#temporals.format(dto.reg, 'yy-MM-dd HH:mm')}"></td>
+	</tr>
+</table>

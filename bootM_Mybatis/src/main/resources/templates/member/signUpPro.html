@@ -1,0 +1,14 @@
+<span th:if="${result == 1}">
+	<script>
+		alert("가입이 완료되었습니다.");
+		window.location="/mem/main";
+	</script>
+</span>
+<span th:if="${result != 1}">
+	<script>
+		alert("다시 작성하세요.");
+		history.go(-1);
+	</script>
+</span>
+
+<!-- redirect로 main 보내버리면 되지만 JSP에 있는거 바꾸는 거니까 걍 이렇게 한거... ㅎㅎ -->

@@ -1,0 +1,11 @@
+<span th:if="${result == 1}">
+	<script>
+		window.location="/board/content?num=[[${boardDTO.num}]]&pageNum=[[${pageNum}]]";
+	</script>
+</span>
+<span th:unless="${result == 1}">
+	<script>
+		alert("비밀번호를 확인하세요.");
+		history.go(-1);
+	</script>
+</span>

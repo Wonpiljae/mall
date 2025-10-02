@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ex.repository.BoardMapper">
+<!-- 
+	mapper namespace 속성
+	.XML이 연결될 Mapper인터페이스의 풀네임(패키지명+클래스명) 경로 작성.
+	
+	태그 내 속성
+	id				: 모든 태그의 고유이름 지정
+					: Mapper Interface의 메서드명
+	parameterType	: 전달받는 파라미터의 클래스 경로
+					: insert/update/delete에서 생략 가능.
+	resultType		: 결과 타입
+					: select에서 반드시 작성.
+					: 컬럼명과 DTO 필드명이 동일해야 자동 매핑.
+	: com.ex.date.BoardDTO	풀네임 작성
+	: 클래스명만 작성할 시 추가 설정 필요.
+
+-->
+<!--
+	<sql id="공통"> 재사용 하기 위한 태그.
+	공통으로 사용될 조건을 빼둔 것.
+	주로 조건문(WHERE, ORDER BY 등)을 재사용할 때 유용함.
+	<include refid="공통"> 태그로 적용한다.
+-->
+
+	<!-- 글작성 시 필요한 쿼리 3개 -->
+	<!-- 1. nvl(컬럼, 값) : null일 때 처리 -->
+	<select id="maxNum" resultType="int">
+		select NVL(max(num), 0) from board
+	</select>
+	
+	<!-- 2. 답글(insert) 시, 기존 글들의 re_step을 +1 하여
+	새 글을 가장 위로 배치하고 기존 글은 한 칸씩 아래로 내리는 처리. -->
+	<update id="reStepUp">
+		update board set re_step=re_step+1 where ref=#{ref} and re_step > #{re_step}
+	</update>
+	
+	<!-- 3. 글작성,  parameterType 생략	MyBatis가 파라미터 타입을 자동 추론 -->
+	<insert id="boardInsert">
+		insert into board values( board_seq.nextval, #{writer}, #{title}, #{content}, #{pw}, 0, #{ref}, #{re_level}, #{re_step}, sysdate)
+	</insert>
+
+	<!-- 글개수 -->
+	<select id="boardCount" resultType="int">
+		select count(*) from board
+	</select>
+
+	<!-- 글목록 -->
+	<select id="boardList" resultType="com.ex.data.BoardDTO">
+		<![CDATA[
+		select * from ( select b.*, rownum r from 
+				( select * from board order by ref desc, re_step asc ) b )
+				where r >= #{start} and r <= #{end}
+		]]>
+	</select>
+<!--	
+	<![CDATA[ ]]>  씨 데이터
+	CDATA는 Character Data의 약자로, 
+	특수문자 <, > 등을 태그로 인식하지 않도록 방지
+	
+	🔎 동작
+	페이징 처리된 글 목록 조회
+	order by ref desc, re_step asc
+	→ ref 역순(최신 글 먼저), re_step 오름차순(답글 순서)
+	
+	1. 특수 문자 처리
+	XML에서는 <, >, &와 같은 특수 문자가 예약되어 있어 일반적으로 쓸 수 없음.
+	XML 파서가 이를 태그로 인식하려고 해서 오류가 발생할 수 있음.
+	CDATA를 사용하면 내부의 내용을 XML 파서가 해석하지 않고 텍스트로 처리함.
+	2. 가독성
+	SQL 쿼리와 같은 긴 문자열을 포함할 때 
+	CDATA를 사용하면 코드가 더 깔끔하고 읽기 쉬움.	-->
+	
+	<!-- 공통 쿼리 빼두기 -->
+	<sql id="whereNum">
+		where num=#{num}
+	</sql>
+	
+	<!-- 조회수 +1 -->
+	<update id="readCountUp">
+		update board set readCount=readCount+1 <include refid="whereNum"></include>
+	</update>
+	
+	<!-- num(게시글 번호)로 해당 글의 상세 내용 조회. -->
+	<select id="boardContent" resultType="com.ex.data.BoardDTO">
+		select * from board 
+		<include refid="whereNum"></include>
+	</select>
+
+	<!-- 글 수정 -->
+	<update id="boardUpdate">
+		update board set writer=#{writer}, title=#{title}, content=#{content}, pw=#{pw} 
+		<include refid="whereNum"/>
+	</update>
+	
+	<!-- 비밀번호 확인 -->
+	<select id="pwCheck" resultType="String">
+		select pw from board <include refid="whereNum"/>
+	</select>
+	
+	<!-- 글 삭제 -->
+	<delete id="boardDelete">
+		delete from board where <include refid="whereNum"></include>
+	</delete>
+</mapper>

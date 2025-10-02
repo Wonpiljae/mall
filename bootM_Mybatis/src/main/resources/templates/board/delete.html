@@ -1,0 +1,12 @@
+<span th:if="${result == 1}">
+	<script>
+		alert("삭제 되었습니다.");
+		window.location="/board/list?pageNum=[[${pageNum}]]";
+	</script>
+</span>
+<span th:unless="${result == 1}">
+	<script>
+		alert("비밀번호를 확인하세요");
+		history.go(-1);
+	</script>
+</span>
