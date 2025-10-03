@@ -10,4 +10,4 @@
 출력
 첫째 줄에 윤년이면 1, 아니면 0을 출력한다. */
 const year = parseInt(require('fs').readFileSync('/dev/stdin').toString());
-
+s
