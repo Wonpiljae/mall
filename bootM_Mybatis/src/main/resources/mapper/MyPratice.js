@@ -10,4 +10,23 @@
 출력
 첫째 줄에 윤년이면 1, 아니면 0을 출력한다. */
 const year = parseInt(require('fs').readFileSync('/dev/stdin').toString());
-s
+
+/*
+A+B 다국어
+문제
+두 정수 A와 B를 입력받은 다음, A+B를 출력하는 프로그램을 작성하시오.
+
+입력
+첫째 줄에 A와 B가 주어진다. (0 < A, B < 10)
+
+출력
+첫째 줄에 A+B를 출력한다.
+ */
+const fs=require('fs');
+
+const input =fs.readFileSync('/dev/stdin').toString().trim().split(' ');
+
+const A = parseInt(input[0]);
+const B = parseInt(input[1]);
+
+console.log(A+B);
